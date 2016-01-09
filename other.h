@@ -13,5 +13,4 @@ int PrintVector(std::vector<T> vec)
 
 int PrintLink(Head &head);
 
-
 #endif

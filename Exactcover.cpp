@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #define MATRIX_MOUDLE 1
 #define VECTOR_MOUDLE 2
+/*#define _DEBUG_MODE 1;*/
 
 int _tmain(int argc, _TCHAR* argv[])
 {

@@ -29,19 +29,3 @@ int HeadofColumn::AddUnitNumber(int num)
 {
 	return __unitNumber += num;
 }
-
-//traval the node in this column, return the quantity of the node
-int HeadofColumn::traversal(PF pf)
-{
-	Node *node;
-	int time = 0;
-
-	node = __down;
-	while (node != this)
-	{
-		(*pf)(*node);
-		time++;
-		node = &(node->GetDownNode());
-	}
-	return time;
-}

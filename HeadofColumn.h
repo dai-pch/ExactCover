@@ -16,9 +16,6 @@ public:
 	int GetUnitNumber();
 	int AddUnitNumber(int num);
 
-	//traval the node in this column, return the quantity of the node
-	int traversal(PF pf);
-
 };
 
 #endif

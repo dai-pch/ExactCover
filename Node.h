@@ -39,17 +39,6 @@ class Node
 		//delet this node from the link, return 0
 		int RemoveSelf();
 
-		//friend function of delet, used to traversal
-		friend int deletfromrow1(Node &node);
-		friend int deletfromcolumn1(Node &node);
-		friend int deletself1(Node &node);
-
-		//friend function of insert, used to traversal
-		friend int inserttorow1(Node &node);
-		friend int inserttocolumn1(Node &node);
-		friend int insertself1(Node &node);
 };
-
-typedef int (*PF)(Node &);
 
 #endif
