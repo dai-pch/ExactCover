@@ -5,24 +5,22 @@
 #define MATRIX_MOUDLE 1
 #define VECTOR_MOUDLE 2
 
-bool debug = false;
-
 int _tmain(int argc, _TCHAR* argv[])
 {
 	int model = VECTOR_MOUDLE;
 	bool printtime = false, aut = false;
 	for (int ii = 1; ii < argc; ii++)
 	{
-		if (_tcscmp(argv[ii],_TEXT("-v")) == 0)
+		if (_tcscmp(argv[ii], _TEXT("-v")) == 0)
 			model = VECTOR_MOUDLE;
-		if (_tcscmp(argv[ii],_TEXT("-m")) == 0)
+		if (_tcscmp(argv[ii], _TEXT("-m")) == 0)
 			model = MATRIX_MOUDLE;
 		if (_tcscmp(argv[ii], _TEXT("-t")) == 0)
 			printtime = true;
 		if (_tcscmp(argv[ii], _TEXT("-a")) == 0)
 			aut = true;
-		if (_tcscmp(argv[ii], _TEXT("-d")) == 0)
-			debug = true;
+/*		if (_tcscmp(argv[ii], _TEXT("-d")) == 0)
+			debug = true;*/
 	}
 /*	int matric[] = { 1, 0, 0, 1, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 0,
@@ -68,8 +66,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		else if (model == VECTOR_MOUDLE)
 		{
-			nonzeroposition po;
-			std::vector<nonzeroposition> ini;
+			nonZeroPosition po;
+			std::vector<nonZeroPosition> ini;
 
 			if (!aut)
 			{
@@ -108,7 +106,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			if (dl != nullptr)
 			{
-				temp = solveexactcover(*dl, res);
+				temp = SolveExactCover(*dl, res);
 				delete dl;
 				if (temp == 0)
 				{
@@ -120,7 +118,7 @@ int _tmain(int argc, _TCHAR* argv[])
 					{
 						std::cout << "The result is:" << std::endl;
 					}
-					printvector(res);
+					PrintVector(res);
 				}
 			}
 			else
@@ -139,4 +137,5 @@ int _tmain(int argc, _TCHAR* argv[])
 //	system("Pause");
 	return 0;
 }
+
 

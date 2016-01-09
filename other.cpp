@@ -1,44 +1,42 @@
 #include "stdafx.h"
 
-extern bool debug;
-
-int printlink(Head &head)
+int PrintLink(Head &head)
 {
 	Node *node;
 	Node *rowhead;
 
 	std::cout << "The link is:" << std::endl;
-	rowhead = &(head.downnode());
+	rowhead = &(head.GetDownNode());
 
 	while (dynamic_cast<Node*>(rowhead) != dynamic_cast<Node*>(&head))
 	{
-	node = &(rowhead->rightnode());
+	node = &(rowhead->GetRightNode());
 	while (dynamic_cast<Node*>(node) != rowhead)
 	{
-	std::cout << "(" << (static_cast<Unit*>(node))->rowhead().getrownumber() << ", " << (static_cast<Unit*>(node))->columnhead().getcolumnnumber() << ")" << " ";
-	node = &(node->rightnode());
+	std::cout << "(" << (static_cast<Unit*>(node))->GetRowNumber() << ", " << (static_cast<Unit*>(node))->GetColumnHead().GetColumnName() << ")" << " ";
+	node = &(node->GetRightNode());
 	}
 	std::cout << std::endl;
 
-	rowhead = &(rowhead->downnode());
+	rowhead = &(rowhead->GetDownNode());
 	}
 
 /*	Node *node;
-	Node *colhead;
+	Node *columnHead;
 
-	colhead = &(head.rightnode());
+	columnHead = &(head.rightnode());
 
-	while (dynamic_cast<Node*>(colhead) != dynamic_cast<Node*>(&head))
+	while (dynamic_cast<Node*>(columnHead) != dynamic_cast<Node*>(&head))
 	{
-	node = &(colhead->downnode());
-	while (dynamic_cast<Node*>(node) != colhead)
+	node = &(columnHead->downnode());
+	while (dynamic_cast<Node*>(node) != columnHead)
 	{
-	std::cout << "(" << (static_cast<Unit*>(node))->rowhead().getrownumber() << ", " << (static_cast<Unit*>(node))->columnhead().getcolumnnumber() << ")" << " ";
+	std::cout << "(" << (static_cast<Unit*>(node))->rowhead().getrownumber() << ", " << (static_cast<Unit*>(node))->GetColumnHead().getcolumnnumber() << ")" << " ";
 	node = &(node->downnode());
 	}
 	std::cout << std::endl;
 
-	colhead = &(colhead->rightnode());
+	columnHead = &(columnHead->rightnode());
 	}
 	std::cout << std::endl;*/
 

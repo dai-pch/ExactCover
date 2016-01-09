@@ -13,6 +13,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <algorithm>
 #include <string>
 #include <tchar.h>
 #include <time.h>
@@ -24,3 +25,5 @@
 #include "Unit.h"
 #include "Head.h"
 #include "other.h"
+
+#define _DEBUG 1;

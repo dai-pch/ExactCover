@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-extern bool debug;
-
 //Node's code
 Node::Node():__left(this), __right(this), __up (this), __down(this)
 {
@@ -18,95 +16,99 @@ Node::Node(Node &left, Node &right, Node &up, Node &down):__left(&left), __right
 
 Node::~Node()
 {
-	deletself();  //delet this node from the link before free
+	RemoveSelf();  //delet this node from the link before free
 }
 
 //get the adjacent node
-Node& Node::leftnode()
+Node& Node::GetLeftNode()
 {
 	return *__left;
 }
-Node& Node::rightnode()
+Node& Node::GetRightNode()
 {
 	return *__right;
 }
-Node& Node::upnode()
+Node& Node::GetUpNode()
 {
 	return *__up;
 }
-Node& Node::downnode()
+Node& Node::GetDownNode()
 {
 	return *__down;
 }
 
 //set four pointer
-Node& Node::setleft(Node &node)
+Node& Node::SetLeft(Node &node)
 {
 	__left = &node;
 	return node;
 }
-Node& Node::setright(Node &node)
+Node& Node::SetRight(Node &node)
 {
 	__right = &node;
 	return node;
 }
-Node& Node::setup(Node &node)
+Node& Node::SetUp(Node &node)
 {
 	__up = &node;
 	return node;
 }
-Node& Node::setdown(Node &node)
+Node& Node::SetDown(Node &node)
 {
 	__down = &node;
 	return node;
 }
 
 //insert this node to the row, return 0
-int Node::inserttorow()
+int Node::InsertToRow()
 {
-	__left->setright(*this);
-	__right->setleft(*this);
+	__left->SetRight(*this);
+	__right->SetLeft(*this);
 	return 0;
 }
 
 //insert this node to the column, return 0
-int Node::inserttocolumn()
+int Node::InsertToColumn()
 {
-	__up->setdown(*this);
-	__down->setup(*this);
+	__up->SetDown(*this);
+	__down->SetUp(*this);
 	return 0;
 }
 
 //insert this node to the link, return 0
-int Node::insertself()
+int Node::InsertSelf()
 {
-	this->inserttocolumn();
-	this->inserttorow();
+	__up->SetDown(*this);
+	__down->SetUp(*this);
+	__left->SetRight(*this);
+	__right->SetLeft(*this);
 	return 0;
 }
 
 
 //delet this node from the row, return 0
-int Node::deletfromrow()
+int Node::RemoveFromRow()
 {
-	__left->setright(*__right);
-	__right->setleft(*__left);
+	__left->SetRight(*__right);
+	__right->SetLeft(*__left);
 	return 0;
 }
 
 //delet this node from the column, return 0
-int Node::deletfromcolumn()
+int Node::RemoveFromColumn()
 {
-	__up->setdown(*__down);
-	__down->setup(*__up);
+	__up->SetDown(*__down);
+	__down->SetUp(*__up);
 	return 0;
 }
 
 //delet this node from the link, return 0
-int Node::deletself()
+int Node::RemoveSelf()
 {
-	this->deletfromrow();
-	this->deletfromcolumn();
+	__left->SetRight(*__right);
+	__right->SetLeft(*__left);
+	__up->SetDown(*__down);
+	__down->SetUp(*__up);
 	return 0;
 }
 
@@ -115,17 +117,17 @@ int Node::deletself()
 
 int deletfromrow1(Node &node)
 {
-	node.deletfromrow();
-/*	node.leftnode().setright(*(node.__right));
-	node.rightnode().setleft(*(node.__left));*/
+	node.RemoveFromRow();
+/*	node.GetLeftNode().setright(*(node.__right));
+	node.GetRigthNode().setleft(*(node.__left));*/
 	return 0;
 }
 
 int deletfromcolumn1(Node &node)
 {
-	node.deletfromcolumn();
-/*	node.upnode().setdown(*(node.__right));
-	node.downnode().setup(*(node.__left));*/
+	node.RemoveFromColumn();
+/*	node.GetUpNode().setdown(*(node.__right));
+	node.GetDownNode().setup(*(node.__left));*/
 	return 0;
 }
 
@@ -141,18 +143,18 @@ int deletself1(Node &node)
 
 int inserttorow1(Node &node)
 {
-	node.inserttorow();
+	node.InsertToRow();
 	return 0;
 }
 
 int inserttocolumn1(Node &node)
 {
-	node.inserttocolumn();
+	node.InsertToColumn();
 	return 0;
 }
 
 int insertself1(Node &node)
 {
-	node.insertself();
+	node.InsertSelf();
 	return 0;
 }

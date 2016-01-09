@@ -12,32 +12,32 @@ class Node
 	public:
 		Node();
 		Node(Node &left, Node &right, Node &up, Node &down);
-		~Node();
+		virtual ~Node();
 
 		//four pointer point to the adjacent node
-		Node &leftnode();
-		Node &rightnode();
-		Node &upnode();
-		Node &downnode();
+		Node &GetLeftNode();
+		Node &GetRightNode();
+		Node &GetUpNode();
+		Node &GetDownNode();
 		//set four pointer
-		Node &setleft(Node &node);
-		Node &setright(Node &node);
-		Node &setup(Node &node);
-		Node &setdown(Node &node);
+		Node &SetLeft(Node &node);
+		Node &SetRight(Node &node);
+		Node &SetUp(Node &node);
+		Node &SetDown(Node &node);
 
 		//insert this node to the row, return 0
-		int inserttorow();
+		int InsertToRow();
 		//insert this node to the column, return 0
-		int inserttocolumn();
+		int InsertToColumn();
 		//insert this node to the link, return 0
-		int insertself();
+		int InsertSelf();
 
 		//delet this node from the row, return 0
-		int deletfromrow();
+		int RemoveFromRow();
 		//delet this node from the column, return 0
-		int deletfromcolumn();
+		int RemoveFromColumn();
 		//delet this node from the link, return 0
-		int deletself();
+		int RemoveSelf();
 
 		//friend function of delet, used to traversal
 		friend int deletfromrow1(Node &node);

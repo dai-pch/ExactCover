@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-extern bool debug;
-
 //HeadofRow's code
 HeadofRow::HeadofRow() :Node(), __row(0){}
 HeadofRow::HeadofRow(Node &up, Node &down, int row) : Node(up, down, up, down), __row(row)
@@ -14,7 +12,7 @@ HeadofRow::~HeadofRow()
 
 	while (__right != this)
 	{
-		node = &(__right->rightnode());
+		node = &(__right->GetRightNode());
 		delete __right;
 		__right = node;
 	}
@@ -36,7 +34,7 @@ int HeadofRow::traversal(PF pf)
 	{
 		(*pf)(*node);
 		time++;
-		node = &(node->rightnode());
+		node = &(node->GetRightNode());
 	}
 	return time;
 }
@@ -46,10 +44,11 @@ int HeadofRow::deletrow()
 {
 
 	//debug
-	if (debug)
+#ifdef _DEBUG
 		std::cout << "Delete row:" << __row << std::endl;
+#endif
 
-	this->deletfromcolumn();
+	this->RemoveFromColumn();
 	return traversal(deletfromcolumn1);
 /*	Node *node;
 	int time = 0;
@@ -68,48 +67,10 @@ int HeadofRow::deletrow()
 int HeadofRow::insertrow()
 {
 	//debug
-	if (debug)
+#ifdef _DEBUG
 		std::cout << "Insert row:" << __row << std::endl;
+#endif
 
-	this->inserttocolumn();
+	this->InsertToColumn();
 	return traversal(inserttocolumn1);
-}
-
-//delete the column that have node in this row.
-int HeadofRow::delrelatedcol()
-{
-	Node *temp;
-
-	//debug
-	if (debug)
-		std::cout << std::endl << "Select row:" << __row << std::endl;
-
-	this->deletfromcolumn();
-	temp = &(this->rightnode());
-	while (temp != this)
-	{
-		(static_cast<Unit*> (temp))->columnhead().delrelatedrow(*temp);
-		temp = &(temp->rightnode());
-	}
-
-	return 0;
-}
-//insert the column that delrelatedcol delete.
-int HeadofRow::insrelatedcol()
-{
-	Node *temp;
-
-	//debug
-	if (debug)
-		std::cout << std::endl << "Cancel row selection:" << __row << std::endl;
-
-	this->inserttocolumn();
-	temp = &(this->leftnode());
-	while (temp != this)
-	{
-		(static_cast<Unit*> (temp))->columnhead().insrelatedrow(*temp);
-		temp = &(temp->leftnode());
-	}
-
-	return 0;
 }

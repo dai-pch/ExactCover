@@ -1,30 +1,56 @@
 #include "stdafx.h"
 
-extern bool debug;
-
-//Head::Head(): Node(), __totalcolumn(0), __totalrow(0){}
+//Head::Head(): Node(), __totalColumn(0), __totalRow(0){}
 Head::Head(int matric[], int m, int n)
 {
 	int mn = m*n;
+	Node *columnHead, *rowHead;
+	Node *newUnit;
 /*	if (mn*sizeof(int) != sizeof(matric))
 		throw std::logic_error("Matric size does not match.");*/
 
 	//debug
-	if (debug)
-		std::cout << "Creat links:" << std::endl;
+	#ifdef _DEBUG
+	std::cout << "Creat links:" << std::endl;
+	#endif
 
-	for (int i = 0; i < n; i++)
+	for (int ii = 0; ii < n; ii++)
 	{
-		creatcolumnhead();
+		_CreatColumnHead();
 	}
-	for (int i = 0; i < m; i++)
+
+	for (int ii = 0; ii < m; ii++)
 	{
-		creatrowhead();
-	}
-	for (int i = 0; i < mn; i++)
-	{
-		if (matric[i] != 0)
-			creatunit(i / n + 1, i % n + 1);
+		rowHead = nullptr;
+		columnHead = this;
+		for (int jj = 0; jj < n; jj++)
+		{
+			columnHead = &(columnHead->GetRightNode());
+			if (matric[n*ii + jj] != 0)
+			{
+				if (rowHead == nullptr)
+				{
+					newUnit = new Unit(*columnHead, *columnHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii);
+					if (newUnit != nullptr)
+					{
+						newUnit->SetLeft(*newUnit);
+						newUnit->SetRight(*newUnit);
+						newUnit->InsertSelf();
+						rowHead = newUnit;
+					}
+					else
+						throw std::logic_error("Can't creat new unit.");
+				}
+				else
+				{
+					newUnit = new Unit(rowHead->GetLeftNode(), *rowHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii);
+					if (newUnit != nullptr)
+						newUnit->InsertSelf();
+					else
+						throw std::logic_error("Can't creat new unit.");
+				}
+			}
+		}
 	}
 
 }
@@ -32,66 +58,128 @@ Head::Head(int matric[], int m, int n)
 Head::Head(const std::vector<int> &matric, int m, int n)
 {
 	int mn = m*n;
-	std::vector<int>::const_iterator it;
 	int ii;
+	Node *columnHead, *rowHead;
+	Node *newUnit;
+
+	//debug
+	#ifdef _DEBUG
+	std::cout << "Creat links:" << std::endl;
+	#endif
 
 	if (matric.size() != mn)
 		throw std::logic_error("Matric size does not match.");
 
 	for (int i = 0; i < n; i++)
 	{
-		creatcolumnhead();
+		_CreatColumnHead();
 	}
-	for (int i = 0; i < m; i++)
+
+	for (int ii = 0; ii < m; ii++)
 	{
-		creatrowhead();
+		rowHead = nullptr;
+		columnHead = this;
+		for (int jj = 0; jj < n; jj++)
+		{
+			columnHead = &(columnHead->GetRightNode());
+			if (matric[n*ii + jj] != 0)
+			{
+				if (rowHead == nullptr)
+				{
+					newUnit = new Unit(*columnHead, *columnHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii + 1);
+					if (newUnit != nullptr)
+					{
+						newUnit->SetLeft(*newUnit);
+						newUnit->SetRight(*newUnit);
+						newUnit->InsertSelf();
+						rowHead = newUnit;
+					}
+					else
+						throw std::logic_error("Can't creat new unit.");
+				}
+				else
+				{
+					newUnit = new Unit(rowHead->GetLeftNode(), *rowHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii + 1);
+					if (newUnit != nullptr)
+						newUnit->InsertSelf();
+					else
+						throw std::logic_error("Can't creat new unit.");
+				}
+			}
+		}
 	}
-	for (it = matric.begin(), ii = 0; it != matric.end(); it++, ii++)
-	{
-		if (*it != 0)
-			creatunit(ii / n + 1, ii % n + 1);
-	}
+
 }
 
-Head::Head(const std::vector<nonzeroposition> &matric, int m, int n)
+Head::Head(std::vector<nonZeroPosition> &matric, int m, int n)
 {
-	std::vector<nonzeroposition>::const_iterator it;
+	std::vector<nonZeroPosition>::const_iterator it;
+	int currentRow, currentColumn, lastRow=1;
+	Node *columnHead, *rowHead;
+	Node *newUnit;
+
+	std::sort(matric.begin(), matric.end(), IsLessNonZeroPosition);
 
 	for (int ii = 0; ii < n; ii++)
 	{
-		creatcolumnhead();
+		_CreatColumnHead();
 	}
-	for (int ii = 0; ii < m; ii++)
-	{
-		creatrowhead();
-	}
+
 	for (it = matric.begin(); it != matric.end(); it++)
 	{
-		if ((*it).row > m || (*it).column > n)
+		currentRow = (*it).row;
+		currentColumn = (*it).column;
+		if (currentRow > m || currentColumn > n)
 			throw std::logic_error("Node is out of the matric.");
-		creatunit((*it).row, (*it).column);
+
+		if (currentRow != lastRow)
+		{
+			lastRow = currentRow;
+			rowHead = nullptr;
+			columnHead = this;
+		}
+		for (int ii = 0; ii < currentColumn; ii++)
+			columnHead = &(columnHead->GetRightNode());
+
+		//debug
+		#ifdef _DEBUG
+		std::cout << "Creat unit " << "(" << currentRow << ", " << currentColumn << ")" << std::endl;
+		#endif
+
+		if (rowHead == nullptr)
+		{
+			newUnit = new Unit(*columnHead, *columnHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), currentRow);
+			if (newUnit != nullptr)
+			{
+				newUnit->SetLeft(*newUnit);
+				newUnit->SetRight(*newUnit);
+				newUnit->InsertSelf();
+				rowHead = newUnit;
+			}
+			else
+				throw std::logic_error("Can't creat new unit.");
+		}
+		else
+		{
+			newUnit = new Unit(rowHead->GetLeftNode(), *rowHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), currentRow);
+			if (newUnit != nullptr)
+				newUnit->InsertSelf();
+			else
+				throw std::logic_error("Can't creat new unit.");
+		}
 	}
 }
 
 Head::~Head()
 {
-	Node *node;
 	while (__right != this)
 	{
-		node = &(__right->rightnode());
 		delete __right;
-		__right = node;
-	}
-	while (__down != this)
-	{
-		node = &(__down->downnode());
-		delete __down;
-		__down = node;
 	}
 }
 
 //creat HeadofColumn object and add it into link, return the total number of column after add
-int Head::creatcolumnhead()
+int Head::_CreatColumnHead()
 {
 	HeadofColumn *newhead;
 	int col = 1;
@@ -102,174 +190,108 @@ int Head::creatcolumnhead()
 	}
 	else
 	{
-		col = ((static_cast<HeadofColumn*> (__left))->getcolumnnumber()) + 1;
+		col = ((static_cast<HeadofColumn*> (__left))->GetColumnName()) + 1;
 		newhead = new HeadofColumn(*__left, *this, col);
 	}
-	if (newhead != NULL)
+
+	if (newhead != nullptr)
 	{
-		newhead->inserttorow();
-		__totalcolumn++;
+		newhead->InsertToRow();
+		__totalColumn++;
 	}
 	else
 		throw std::logic_error("Can't creat new columnhead.");
 
 	//debug
-	if (debug)
-		std::cout << "Creat column" << col << std::endl;
+	#ifdef _DEBUG
+		std::cout << "Creat column:" << col << std::endl;
+	#endif
 
 	return col;
 }
-//creat HeadofRow object and add it into link, return the total number of row after add
-int Head::creatrowhead()
+
+int SolveExactCover(Head &head, std::vector<int> &res)
 {
-	HeadofRow *newhead;
-	int row = 1;
-
-	if (__up == this)
-	{
-		newhead = new HeadofRow(*this, *this, row);
-	}
-	else
-	{
-		row = ((static_cast<HeadofRow*> (__up))->getrownumber()) + 1;
-		newhead = new HeadofRow(*__up, *this, row);
-	}
-	if (newhead != NULL)
-	{
-		newhead->inserttocolumn();
-		__totalrow++;
-	}
-	else
-		throw std::logic_error("Can't creat new rowhead.");
-
-	//debug
-	if (debug)
-		std::cout << "Creat row" << row << std::endl;
-
-	return row;
-}
-//creat Unit object and add it into link, (column, row) are its position, return 0
-int Head::creatunit(int row, int column)
-{
-	HeadofColumn *colhead;
-	HeadofRow *rowhead;
-	Node *tempcol, *temprow;
-	Unit *newunit;
-
-	if (__totalcolumn < column)
-		throw std::logic_error("Column not found.");
-	if (__totalrow < row)
-		throw std::logic_error("Row not found.");
-
-	tempcol = __right;
-	for (int i = 1; i < column; i++)
-	{
-		tempcol = &(tempcol->rightnode());
-	}
-	colhead = static_cast<HeadofColumn*> (tempcol);
-
-	temprow = __down;
-	for (int i = 1; i < row; i++)
-	{
-		temprow = &(temprow->downnode());
-	}
-	rowhead = static_cast<HeadofRow*> (temprow);
-
-	tempcol = &(tempcol->upnode());
-	while ((tempcol != colhead) && ((static_cast<Unit*> (tempcol))->rowhead().getrownumber() > row))
-		tempcol = &(tempcol->upnode());
-	
-	temprow = &(temprow->leftnode());
-	while ((temprow != rowhead) && ((static_cast<Unit*> (temprow))->columnhead().getcolumnnumber() > column))
-		temprow = &(temprow->leftnode());
-
-	newunit = new Unit(*temprow, temprow->rightnode(), *tempcol, tempcol->downnode(), *colhead, *rowhead);
-	if (newunit != NULL)
-		newunit->insertself();
-	else
-		throw std::logic_error("Can't creat new unit.");
-
-	//debug
-	if (debug)
-		std::cout << "Creat unit " << "(" << newunit->rowhead().getrownumber() << ", " << newunit->columnhead().getcolumnnumber() << ")" << std::endl;
-
-	return 0;
-}
-
-int solveexactcover(Head &head, std::vector<int> &res)
-{
-	HeadofColumn *colhead;
+	HeadofColumn *columnHead;
 	Unit *unit;
 	Node *node;
 	int minunit, temp;
 
-	if (&(head.rightnode()) == &head)
+	if (&(head.GetRightNode()) == &head)
 	{
-		if (debug)
+		#ifdef _DEBUG
 			std::cout << "Success." << std::endl;
+		#endif
 		return 1;
 	}
 	
 
-	minunit = findmincol(head, colhead);
+	minunit = FindMinColumn(head, columnHead);
 	if (minunit == 0)
 	{
-		if (debug)
-			std::cout << "Column " << colhead->getcolumnnumber() << " have no unit." << std::endl;
+		#ifdef _DEBUG
+			std::cout << "Column " << columnHead->GetColumnName() << " have no unit." << std::endl;
+		#endif
 		return 0;
 	}
 
 	//begin to solve
-	node = dynamic_cast<Node*> (colhead);
-	unit = static_cast<Unit*>(&(colhead->downnode()));
+	node = dynamic_cast<Node*> (columnHead);
+	unit = static_cast<Unit*>(&(columnHead->GetDownNode()));
 	while (unit != node)
 	{
-		unit->rowhead().delrelatedcol();
-		temp = solveexactcover(head, res);
-		unit->rowhead().insrelatedcol();
+		unit->RemoveRelatedColumn();
+		temp = SolveExactCover(head, res);
+		unit->InsertRelatedColumn();
 
 		if (temp == 1)
 		{
-			res.push_back(unit->rowhead().getrownumber());
+			res.push_back(unit->GetRowNumber());
 
 			//debug
-			if (debug)
-			{
+			#ifdef _DEBUG
 				std::cout << "Success, return vector: ";
-				printvector(res);
-			}
+				PrintVector(res);
+			#endif
 
 			return 1;
 		}
 		else if (temp == 0)
-			unit = static_cast<Unit*>(&(unit->downnode()));
+			unit = static_cast<Unit*>(&(unit->GetDownNode()));
 	}
-	
+
 	return 0;
 }
 
 //find the column that contain minimal node
-int findmincol(Head &head, HeadofColumn* &minhead)
+int FindMinColumn(Head &head, HeadofColumn* &minHead)
 {
 	Node *node;
-	int minunit, temp;
+	int temp;
 
 	//if there is no column head, return -1
-	if (&(head.rightnode()) == &head)
+	node = &(head.GetRightNode());
+	if (node == &head)
 		return -1;
 
-	node = &(head.rightnode());
-	minhead = static_cast<HeadofColumn*>(node);
-	minunit = (static_cast<HeadofColumn*>(node))->getunitnumber();
+	minHead = static_cast<HeadofColumn*>(node);
 	while (node != &head)
 	{
-		temp = (static_cast<HeadofColumn*>(node))->getunitnumber();
-		if (temp < minunit)
+		temp = (static_cast<HeadofColumn*>(node))->GetUnitNumber();
+		if (temp < (static_cast<HeadofColumn*>(minHead))->GetUnitNumber())
 		{
-			minunit = temp;
-			minhead = static_cast<HeadofColumn*>(node);
+			minHead = static_cast<HeadofColumn*>(node);
 		}
-		node = &(node->rightnode());
+		node = &(node->GetRightNode());
 	}
-	return minunit;
+	return (static_cast<HeadofColumn*>(minHead))->GetUnitNumber();
+}
+
+
+bool IsLessNonZeroPosition(const nonZeroPosition &element1, const nonZeroPosition &element2)
+{
+	if (element1.row < element2.row)
+		return true;
+	else
+		return  (element1.column < element2.column)?true:false;
 }
