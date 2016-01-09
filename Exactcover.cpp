@@ -7,7 +7,7 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	int model = VECTOR_MOUDLE;
+	int model = MATRIX_MOUDLE;
 	bool printtime = false, aut = false;
 	for (int ii = 1; ii < argc; ii++)
 	{

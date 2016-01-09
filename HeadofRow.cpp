@@ -44,7 +44,7 @@ int HeadofRow::deletrow()
 {
 
 	//debug
-#ifdef _DEBUG
+#ifdef _DEBUG_MODE
 		std::cout << "Delete row:" << __row << std::endl;
 #endif
 
@@ -67,7 +67,7 @@ int HeadofRow::deletrow()
 int HeadofRow::insertrow()
 {
 	//debug
-#ifdef _DEBUG
+#ifdef _DEBUG_MODE
 		std::cout << "Insert row:" << __row << std::endl;
 #endif
 

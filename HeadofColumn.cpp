@@ -27,7 +27,7 @@ int HeadofColumn::GetUnitNumber()
 
 int HeadofColumn::AddUnitNumber(int num)
 {
-	__unitNumber += num;
+	return __unitNumber += num;
 }
 
 //traval the node in this column, return the quantity of the node

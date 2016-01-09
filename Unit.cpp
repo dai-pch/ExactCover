@@ -33,11 +33,9 @@ int Unit::RemoveColumn()
 	Node *node;
 
 	//debug
-	#ifdef _DEBUG
-	std::cout << "Delet column:" << this->GetColumnHead().GetColumnName() << std::endl;
+	#ifdef _DEBUG_MODE
+	std::cout << "Delete column:" << this->GetColumnHead().GetColumnName() << std::endl;
 	#endif
-
-	this->RemoveFromRow();
 
 	node = __down;
 	while (node != this)
@@ -54,11 +52,9 @@ int Unit::InsertColumn()
 	Node *node;
 
 	//debug
-	#ifdef _DEBUG
+	#ifdef _DEBUG_MODE
 	std::cout << "Insert column:" << this->GetColumnHead().GetColumnName() << std::endl;
 	#endif
-
-	this->InsertToRow();
 
 	node = __up;
 	while (node != this)
@@ -69,44 +65,121 @@ int Unit::InsertColumn()
 	return 0;
 }
 
-
-//delete the column that have node in this row.
-int Unit::RemoveRelatedColumn()
+int Unit::RemoveRow()
 {
-	Node *temp;
+	Node *node;
 
 	//debug
-	#ifdef _DEBUG
-		std::cout << std::endl << "Select row:" << __row << std::endl;
+	#ifdef _DEBUG_MODE
+	std::cout << "Delete row:" << this->GetRowNumber() << std::endl;
 	#endif
 
-	this->RemoveFromColumn();
-	temp = __right;
+	node = __right;
+	while (node != this)
+	{
+		node->RemoveFromColumn();
+		node = &(node->GetRightNode());
+	}
+	return 0;
+}
+
+int Unit::InsertRow()
+{
+	Node *node;
+
+	//debug
+	#ifdef _DEBUG_MODE
+	std::cout << "Insert row:" << this->GetRowNumber() << std::endl;
+	#endif
+
+	node = __left;
+	while (node != this)
+	{
+		node->InsertToColumn();
+		node = &(node->GetLeftNode());
+	}
+	return 0;
+}
+
+//delete the column that have node in this row.
+int Unit::RemoveAllRowRelatedToColumn()
+{
+	Node *temp;
+	HeadofColumn &columnHead = this->GetColumnHead();
+
+	//debug
+	#ifdef _DEBUG_MODE
+		std::cout << std::endl << "Remove all row related to column:" << columnHead.GetColumnName() << std::endl;
+	#endif
+
+	temp = __down;
 	while (temp != this)
 	{
-		(static_cast<Unit*> (temp))->RemoveColumn();
-		temp = &(temp->GetRightNode());
+		if (temp == &columnHead)
+			temp->RemoveFromRow();
+		else
+			(static_cast<Unit*> (temp))->RemoveRow();
+		temp = &(temp->GetDownNode());
 	}
 
 	return 0;
 }
 
 //insert the column that delrelatedcol delete.
-int Unit::InsertRelatedColumn()
+int Unit::InsertAllRowRelatedToColumn()
 {
 	Node *temp;
-	
+	HeadofColumn &columnHead = this->GetColumnHead();
+
 	//debug
-	#ifdef _DEBUG
-	std::cout << std::endl << "Unselect row:" << __row << std::endl;
+	#ifdef _DEBUG_MODE
+	std::cout << std::endl << "Insert all row related to column:" << columnHead.GetColumnName() << std::endl;
 	#endif
+
+	temp = __up;
+	while (temp != this)
+	{
+		if (temp == &columnHead)
+			temp->InsertToRow();
+		else
+			(static_cast<Unit*> (temp))->InsertRow();
+		temp = &(temp->GetUpNode());
+	}
+
+	return 0;
+}
+
+int Unit::SelectRow()
+{
+	Node *temp;
+
 	//debug
-	
-	this->InsertToColumn();
+	#ifdef _DEBUG_MODE
+	std::cout << std::endl << "Select row:" << this->GetRowNumber() << std::endl;
+	#endif
+
+	temp = __right;
+	while (temp != this)
+	{
+		(static_cast<Unit*> (temp))->RemoveAllRowRelatedToColumn();
+		temp = &(temp->GetRightNode());
+	}
+
+	return 0;
+}
+int Unit::UnSelectRow()
+{
+	Node *temp;
+
+	//debug
+	#ifdef _DEBUG_MODE
+	std::cout << std::endl << "Unselect row:" << this->GetRowNumber() << std::endl;
+	#endif
+
 	temp = __left;
 	while (temp != this)
 	{
-		(static_cast<Unit*> (temp))->InsertColumn();
+		(static_cast<Unit*> (temp))->InsertAllRowRelatedToColumn();
 		temp = &(temp->GetLeftNode());
 	}
 

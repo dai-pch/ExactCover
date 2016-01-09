@@ -18,10 +18,16 @@ public:
 	int RemoveColumn();
 	int InsertColumn();
 
-	//delete the column that have node in this row.
-	int RemoveRelatedColumn();
-	//insert the column that delrelatedcol delete.
-	int InsertRelatedColumn();
+	int RemoveRow();
+	int InsertRow();
+
+	//remove the row that have node in this column.
+	int RemoveAllRowRelatedToColumn();
+	//insert the row that RemoveAllRowRelatedToColumn removed.
+	int InsertAllRowRelatedToColumn();
+
+	int SelectRow();
+	int UnSelectRow();
 };
 
 #endif

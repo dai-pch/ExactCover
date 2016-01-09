@@ -10,7 +10,7 @@ Head::Head(int matric[], int m, int n)
 		throw std::logic_error("Matric size does not match.");*/
 
 	//debug
-	#ifdef _DEBUG
+	#ifdef _DEBUG_MODE
 	std::cout << "Creat links:" << std::endl;
 	#endif
 
@@ -31,6 +31,12 @@ Head::Head(int matric[], int m, int n)
 				if (rowHead == nullptr)
 				{
 					newUnit = new Unit(*columnHead, *columnHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii);
+
+					//debug
+					#ifdef _DEBUG_MODE
+					std::cout << "Creat unit " << "(" << ii + 1 << ", " << jj + 1 << ")" << std::endl;
+					#endif
+
 					if (newUnit != nullptr)
 					{
 						newUnit->SetLeft(*newUnit);
@@ -44,6 +50,12 @@ Head::Head(int matric[], int m, int n)
 				else
 				{
 					newUnit = new Unit(rowHead->GetLeftNode(), *rowHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii);
+
+					//debug
+					#ifdef _DEBUG_MODE
+					std::cout << "Creat unit " << "(" << ii + 1 << ", " << jj + 1 << ")" << std::endl;
+					#endif
+
 					if (newUnit != nullptr)
 						newUnit->InsertSelf();
 					else
@@ -58,19 +70,18 @@ Head::Head(int matric[], int m, int n)
 Head::Head(const std::vector<int> &matric, int m, int n)
 {
 	int mn = m*n;
-	int ii;
 	Node *columnHead, *rowHead;
 	Node *newUnit;
 
 	//debug
-	#ifdef _DEBUG
+	#ifdef _DEBUG_MODE
 	std::cout << "Creat links:" << std::endl;
 	#endif
 
 	if (matric.size() != mn)
 		throw std::logic_error("Matric size does not match.");
 
-	for (int i = 0; i < n; i++)
+	for (int ii = 0; ii < n; ii++)
 	{
 		_CreatColumnHead();
 	}
@@ -87,6 +98,12 @@ Head::Head(const std::vector<int> &matric, int m, int n)
 				if (rowHead == nullptr)
 				{
 					newUnit = new Unit(*columnHead, *columnHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii + 1);
+
+					//debug
+					#ifdef _DEBUG_MODE
+					std::cout << "Creat unit " << "(" << ii+1 << ", " << jj+1 << ")" << std::endl;
+					#endif
+
 					if (newUnit != nullptr)
 					{
 						newUnit->SetLeft(*newUnit);
@@ -100,6 +117,12 @@ Head::Head(const std::vector<int> &matric, int m, int n)
 				else
 				{
 					newUnit = new Unit(rowHead->GetLeftNode(), *rowHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii + 1);
+
+					//debug
+					#ifdef _DEBUG_MODE
+					std::cout << "Creat unit " << "(" << ii+1 << ", " << jj+1 << ")" << std::endl;
+					#endif
+
 					if (newUnit != nullptr)
 						newUnit->InsertSelf();
 					else
@@ -115,7 +138,7 @@ Head::Head(std::vector<nonZeroPosition> &matric, int m, int n)
 {
 	std::vector<nonZeroPosition>::const_iterator it;
 	int currentRow, currentColumn, lastRow=1;
-	Node *columnHead, *rowHead;
+	Node *columnHead=this, *rowHead=nullptr;
 	Node *newUnit;
 
 	std::sort(matric.begin(), matric.end(), IsLessNonZeroPosition);
@@ -142,7 +165,7 @@ Head::Head(std::vector<nonZeroPosition> &matric, int m, int n)
 			columnHead = &(columnHead->GetRightNode());
 
 		//debug
-		#ifdef _DEBUG
+		#ifdef _DEBUG_MODE
 		std::cout << "Creat unit " << "(" << currentRow << ", " << currentColumn << ")" << std::endl;
 		#endif
 
@@ -203,7 +226,7 @@ int Head::_CreatColumnHead()
 		throw std::logic_error("Can't creat new columnhead.");
 
 	//debug
-	#ifdef _DEBUG
+	#ifdef _DEBUG_MODE
 		std::cout << "Creat column:" << col << std::endl;
 	#endif
 
@@ -214,12 +237,11 @@ int SolveExactCover(Head &head, std::vector<int> &res)
 {
 	HeadofColumn *columnHead;
 	Unit *unit;
-	Node *node;
 	int minunit, temp;
 
 	if (&(head.GetRightNode()) == &head)
 	{
-		#ifdef _DEBUG
+		#ifdef _DEBUG_MODE
 			std::cout << "Success." << std::endl;
 		#endif
 		return 1;
@@ -229,27 +251,28 @@ int SolveExactCover(Head &head, std::vector<int> &res)
 	minunit = FindMinColumn(head, columnHead);
 	if (minunit == 0)
 	{
-		#ifdef _DEBUG
-			std::cout << "Column " << columnHead->GetColumnName() << " have no unit." << std::endl;
-		#endif
+	#ifdef _DEBUG_MODE
+		std::cout << "Column " << columnHead->GetColumnName() << " have no unit." << std::endl;
+	#endif
 		return 0;
 	}
+	else
+		columnHead->RemoveFromRow();
 
 	//begin to solve
-	node = dynamic_cast<Node*> (columnHead);
 	unit = static_cast<Unit*>(&(columnHead->GetDownNode()));
-	while (unit != node)
+	while (unit != dynamic_cast<Node*> (columnHead))
 	{
-		unit->RemoveRelatedColumn();
+		unit->SelectRow();
 		temp = SolveExactCover(head, res);
-		unit->InsertRelatedColumn();
+		unit->UnSelectRow();
 
 		if (temp == 1)
 		{
 			res.push_back(unit->GetRowNumber());
 
 			//debug
-			#ifdef _DEBUG
+			#ifdef _DEBUG_MODE
 				std::cout << "Success, return vector: ";
 				PrintVector(res);
 			#endif
