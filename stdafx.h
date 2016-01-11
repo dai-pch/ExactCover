@@ -11,6 +11,7 @@
 #include <tchar.h>
 
 #include <iostream>
+#include <fstream>
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
@@ -25,3 +26,4 @@
 #include "Head.h"
 #include "other.h"
 
+//#define _DEBUG_MODE 1;

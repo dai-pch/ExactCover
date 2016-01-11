@@ -8,7 +8,7 @@ HeadofColumn::HeadofColumn(Node &left, Node &right, int columnName) : Node(left,
 }
 HeadofColumn::~HeadofColumn()
 {
-	RemoveFromRow();
+	this->RemoveFromRow();
 	while (__down != this)
 	{
 		delete __down;

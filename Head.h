@@ -1,10 +1,12 @@
 #ifndef HEAD_H
 #define HEAD_H
 
-struct nonZeroPosition
+class nonZeroPosition
 {
+public:
 	int row;
 	int column;
+	bool operator < (const nonZeroPosition& ele1);
 };
 
 bool IsLessNonZeroPosition(const nonZeroPosition &element1, const nonZeroPosition &element2);
@@ -12,7 +14,7 @@ bool IsLessNonZeroPosition(const nonZeroPosition &element1, const nonZeroPositio
 class Head :public Node
 {
 private:
-	int __totalRow, __totalColumn;
+	int __totalColumn;
 
 	//creat HeadofColumn object and add it into link, return the total number of column after add
 	int _CreatColumnHead();

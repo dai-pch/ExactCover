@@ -15,6 +15,9 @@ public:
 	HeadofColumn &SetColumnHead(HeadofColumn &);
 	int GetRowNumber();
 
+	virtual int RemoveFromColumn();
+	virtual int InsertToColumn();
+
 	int RemoveColumn();
 	int InsertColumn();
 

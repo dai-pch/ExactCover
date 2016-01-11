@@ -27,6 +27,22 @@ int Unit::GetRowNumber()
 	return __row;
 }
 
+int Unit::RemoveFromColumn()
+{
+	__up->SetDown(*__down);
+	__down->SetUp(*__up);
+	__column->AddUnitNumber(-1);
+	return 0;
+}
+
+int Unit::InsertToColumn()
+{
+	__up->SetDown(*this);
+	__down->SetUp(*this);
+	__column->AddUnitNumber(1);
+	return 0;
+}
+
 //remove node in this column from the link, return 0
 int Unit::RemoveColumn()
 {
@@ -158,6 +174,8 @@ int Unit::SelectRow()
 	std::cout << std::endl << "Select row:" << this->GetRowNumber() << std::endl;
 	#endif
 
+	this->GetColumnHead().RemoveFromRow();
+
 	temp = __right;
 	while (temp != this)
 	{
@@ -182,6 +200,8 @@ int Unit::UnSelectRow()
 		(static_cast<Unit*> (temp))->InsertAllRowRelatedToColumn();
 		temp = &(temp->GetLeftNode());
 	}
+
+	this->GetColumnHead().InsertToRow();
 
 	return 0;
 }

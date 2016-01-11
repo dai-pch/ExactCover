@@ -30,7 +30,7 @@ Head::Head(int matric[], int m, int n)
 			{
 				if (rowHead == nullptr)
 				{
-					newUnit = new Unit(*columnHead, *columnHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii);
+					newUnit = new Unit(*columnHead, *columnHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii + 1);
 
 					//debug
 					#ifdef _DEBUG_MODE
@@ -49,7 +49,7 @@ Head::Head(int matric[], int m, int n)
 				}
 				else
 				{
-					newUnit = new Unit(rowHead->GetLeftNode(), *rowHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii);
+					newUnit = new Unit(rowHead->GetLeftNode(), *rowHead, columnHead->GetUpNode(), *columnHead, *(static_cast<HeadofColumn*>(columnHead)), ii + 1);
 
 					//debug
 					#ifdef _DEBUG_MODE
@@ -137,11 +137,11 @@ Head::Head(const std::vector<int> &matric, int m, int n)
 Head::Head(std::vector<nonZeroPosition> &matric, int m, int n)
 {
 	std::vector<nonZeroPosition>::const_iterator it;
-	int currentRow, currentColumn, lastRow=1;
+	int currentRow, currentColumn, lastRow=1, lastColumn=0;
 	Node *columnHead=this, *rowHead=nullptr;
 	Node *newUnit;
 
-	std::sort(matric.begin(), matric.end(), IsLessNonZeroPosition);
+//	std::sort(matric.begin(), matric.end());
 
 	for (int ii = 0; ii < n; ii++)
 	{
@@ -158,12 +158,13 @@ Head::Head(std::vector<nonZeroPosition> &matric, int m, int n)
 		if (currentRow != lastRow)
 		{
 			lastRow = currentRow;
+			lastColumn = 0;
 			rowHead = nullptr;
 			columnHead = this;
 		}
-		for (int ii = 0; ii < currentColumn; ii++)
+		for (int ii = 0; ii < currentColumn - lastColumn; ii++)
 			columnHead = &(columnHead->GetRightNode());
-
+		lastColumn = currentColumn;
 		//debug
 		#ifdef _DEBUG_MODE
 		std::cout << "Creat unit " << "(" << currentRow << ", " << currentColumn << ")" << std::endl;
@@ -256,8 +257,6 @@ int SolveExactCover(Head &head, std::vector<int> &res)
 	#endif
 		return 0;
 	}
-	else
-		columnHead->RemoveFromRow();
 
 	//begin to solve
 	unit = static_cast<Unit*>(&(columnHead->GetDownNode()));
@@ -310,11 +309,10 @@ int FindMinColumn(Head &head, HeadofColumn* &minHead)
 	return (static_cast<HeadofColumn*>(minHead))->GetUnitNumber();
 }
 
-
-bool IsLessNonZeroPosition(const nonZeroPosition &element1, const nonZeroPosition &element2)
+bool nonZeroPosition::operator < (const nonZeroPosition& element2)
 {
-	if (element1.row < element2.row)
+	if (row < element2.row)
 		return true;
 	else
-		return  (element1.column < element2.column)?true:false;
+		return  (column < element2.column)?true:false;
 }
