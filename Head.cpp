@@ -141,7 +141,7 @@ Head::Head(std::vector<nonZeroPosition> &matric, int m, int n)
 	Node *columnHead=this, *rowHead=nullptr;
 	Node *newUnit;
 
-//	std::sort(matric.begin(), matric.end());
+	std::sort(matric.begin(), matric.end());
 
 	for (int ii = 0; ii < n; ii++)
 	{
@@ -313,6 +313,8 @@ bool nonZeroPosition::operator < (const nonZeroPosition& element2)
 {
 	if (row < element2.row)
 		return true;
+	else if (row >element2.row)
+		return false;
 	else
-		return  (column < element2.column)?true:false;
+		return  (column < element2.column);
 }

@@ -9,8 +9,6 @@ public:
 	bool operator < (const nonZeroPosition& ele1);
 };
 
-bool IsLessNonZeroPosition(const nonZeroPosition &element1, const nonZeroPosition &element2);
-
 class Head :public Node
 {
 private:
