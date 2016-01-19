@@ -26,4 +26,4 @@
 #include "Head.h"
 #include "other.h"
 
-//#define _DEBUG_MODE 1;
+#define _DEBUG_MODE 1;

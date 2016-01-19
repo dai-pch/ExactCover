@@ -42,6 +42,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		std::cout << "Please input the row and column number:" << std::endl;
 	}
+
 	if (!file)
 	{
 		std::cin >> m >> n;
@@ -198,7 +199,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		std::cout << "Running time is: " << static_cast<double>(end_time - start_time) / CLOCKS_PER_SEC * 1000 << "ms" << std::endl;//输出运行时间
 	}
 
-//	system("Pause");
+#ifdef _DEBUG_MODE
+	system("Pause");
+#endif
 	return 0;
 }
 
