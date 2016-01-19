@@ -174,7 +174,7 @@ int Unit::SelectRow()
 	std::cout << std::endl << "Select row:" << this->GetRowNumber() << std::endl;
 	#endif
 
-	this->GetColumnHead().RemoveFromRow();
+	this->RemoveAllRowRelatedToColumn();
 
 	temp = __right;
 	while (temp != this)
@@ -201,7 +201,7 @@ int Unit::UnSelectRow()
 		temp = &(temp->GetLeftNode());
 	}
 
-	this->GetColumnHead().InsertToRow();
+	this->InsertAllRowRelatedToColumn();
 
 	return 0;
 }
